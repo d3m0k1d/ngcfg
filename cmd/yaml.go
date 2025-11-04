@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 type Servers struct {
@@ -18,4 +19,17 @@ type Server struct {
 type Location struct {
 	Name string `yaml:"name"`
 	Path string `yaml:"path"`
+}
+
+func UnmarshalYAML(file string) (Servers, error) {
+	var servers Servers
+
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return servers, err
+	}
+	if err := yaml.Unmarshal(data, &servers); err != nil {
+		return servers, err
+	}
+	return servers, nil
 }

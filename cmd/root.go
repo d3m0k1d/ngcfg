@@ -14,6 +14,31 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var yamltestCmd = &cobra.Command{
+	Use:   "yaml",
+	Short: "Work with YAML configurations",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		file, err := cmd.Flags().GetString("file")
+		if err != nil {
+			return err
+		}
+
+		if file == "" {
+			return fmt.Errorf("флаг -f/--file обязателен")
+		}
+
+		_, err = UnmarshalYAML(file)
+		return err
+	},
+}
+
+func init() {
+	yamltestCmd.Flags().StringP("file", "f", "", "Путь к YAML файлу")
+	yamltestCmd.MarkFlagRequired("file")
+
+	rootCmd.AddCommand(yamltestCmd)
+}
+
 func Init() {
 
 }

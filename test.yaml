@@ -1,0 +1,8 @@
+servers:
+    - name: frontend
+      listen: 80
+      ssl: false
+      locations:
+        - name: static
+          path: /static
+

@@ -10,8 +10,12 @@ var rootCmd = &cobra.Command{
 	Short: "ngcfg",
 	Long:  `ngcfg`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hello World!")
+		fmt.Errorf("Please use the subcommands for help use ngcfg --help")
 	},
+}
+
+func Init() {
+
 }
 
 func Execute() {

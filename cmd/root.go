@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"os"
+	"path"
 )
 
 var rootCmd = &cobra.Command{
@@ -14,9 +16,10 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-var yamltestCmd = &cobra.Command{
+var yamlCmd = &cobra.Command{
 	Use:   "yaml",
-	Short: "Work with YAML configurations",
+	Short: "Work with YAML files",
+	Long:  `Parse and process YAML configuration files`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		file, err := cmd.Flags().GetString("file")
 		if err != nil {
@@ -24,27 +27,31 @@ var yamltestCmd = &cobra.Command{
 		}
 
 		if file == "" {
-			return fmt.Errorf("флаг -f/--file обязателен")
+			return fmt.Errorf("flag -f/--file is required")
 		}
 
-		_, err = UnmarshalYAML(file)
-		return err
+		ext := path.Ext(file)
+		if ext != ".yaml" && ext != ".yml" {
+			return fmt.Errorf("only .yaml and .yml files are supported, got: %s", ext)
+		}
+
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			return fmt.Errorf("file not found: %s", file)
+		}
+
+		return nil
 	},
 }
 
-func init() {
-	yamltestCmd.Flags().StringP("file", "f", "", "Путь к YAML файлу")
-	yamltestCmd.MarkFlagRequired("file")
-
-	rootCmd.AddCommand(yamltestCmd)
-}
-
 func Init() {
-
+	rootCmd.AddCommand(yamlCmd)
+	yamlCmd.Flags().StringP("file", "f", "", "YAML file path")
+	yamlCmd.MarkFlagRequired("file")
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 }

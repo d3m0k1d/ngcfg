@@ -4,6 +4,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gopkg.in/yaml.v3"
 	"os"
+	"strings"
+	"text/template"
 )
 
 type Servers struct {
@@ -39,4 +41,23 @@ func UnmarshalYAML(file string) (Servers, error) {
 	}
 
 	return servers, nil
+}
+
+func GenNgconf(servers Servers) (string, error) {
+	tmpl, err := template.New("ngconf").Parse(ngconfTemplate)
+	if err != nil {
+		return "", err
+	}
+
+	var buf strings.Builder
+
+	for _, server := range servers.Servers {
+		err = tmpl.Execute(&buf, server)
+		if err != nil {
+			return "", err
+		}
+		buf.WriteString("\n\n")
+	}
+
+	return buf.String(), nil
 }

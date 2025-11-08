@@ -39,6 +39,21 @@ var yamlCmd = &cobra.Command{
 			return fmt.Errorf("file not found: %s", file)
 		}
 
+		data, err := UnmarshalYAML(file)
+		if err != nil {
+			return err
+		}
+
+		cfg, err := GenNgconf(data)
+		if err != nil {
+			return err
+		}
+
+		_, err = fmt.Fprintln(os.Stdout, cfg)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	},
 }

@@ -15,6 +15,7 @@ type Servers struct {
 type Server struct {
 	Name      string     `yaml:"name" validate:"required"`
 	Listen    int        `yaml:"listen" validate:"required, min=1, max=65535"`
+	Return    string     `yaml:"return"`
 	SSL       bool       `yaml:"ssl"`
 	Locations []Location `yaml:"locations"`
 }

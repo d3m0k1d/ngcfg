@@ -4,6 +4,7 @@ const ServerBlockTemplate = `
 server {
     server_name {{.Name}};
     listen {{.Listen}};
+    return {{.Return}};
     {{if .SSL}}ssl on;{{end}}
 
     {{range .Locations}}

@@ -1,6 +1,7 @@
 servers:
     - name: frontend
       listen: 80
+      return: 301 https://google.com
       ssl: false
       locations:
         - name: static

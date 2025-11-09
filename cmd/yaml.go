@@ -20,8 +20,9 @@ type Server struct {
 }
 
 type Location struct {
-	Name string `yaml:"name"`
-	Path string `yaml:"path"`
+	Name       string `yaml:"name"`
+	Root_path  string `yaml:"root_path"`
+	Alias_path string `yaml:"alias_path"`
 }
 
 func UnmarshalYAML(file string) (Servers, error) {
@@ -44,7 +45,7 @@ func UnmarshalYAML(file string) (Servers, error) {
 }
 
 func GenNgconf(servers Servers) (string, error) {
-	tmpl, err := template.New("ngconf").Parse(ngconfTemplate)
+	tmpl, err := template.New("ngconf").Parse(ServerBlockTemplate)
 	if err != nil {
 		return "", err
 	}

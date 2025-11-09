@@ -4,5 +4,6 @@ servers:
       ssl: false
       locations:
         - name: static
-          path: /static
-
+          root_path: /static
+        - name: api
+          alias_path: /api

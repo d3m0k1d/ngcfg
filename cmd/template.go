@@ -4,6 +4,9 @@ const ServerBlockTemplate = `
 server {
     server_name {{.Name}};
     listen {{.Listen}};
+    {{if .ListenV6}}listen [::]:{{.ListenV6}};{{end}}
+    charset {{.Charset}};
+    root {{.Root_path_s}};
     return {{.Return}};
     {{if .SSL}}ssl on;{{end}}
 

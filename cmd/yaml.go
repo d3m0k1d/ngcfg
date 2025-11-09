@@ -13,9 +13,13 @@ type Servers struct {
 }
 
 type Server struct {
-	Name      string     `yaml:"name" validate:"required"`
-	Listen    int        `yaml:"listen" validate:"required, min=1, max=65535"`
-	Return    string     `yaml:"return"`
+	Name        string `yaml:"name" validate:"required"`
+	Listen      int    `yaml:"listen" validate:"required, min=1, max=65535"`
+	ListenV6    int    `yaml:"listen_v6" validate:" min=1, max=65535"`
+	Return      string `yaml:"return"`
+	Root_path_s string `yaml:"root_path_s"`
+	Charset     string `yaml:"charset"`
+
 	SSL       bool       `yaml:"ssl"`
 	Locations []Location `yaml:"locations"`
 }

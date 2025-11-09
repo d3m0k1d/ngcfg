@@ -1,6 +1,9 @@
 servers:
     - name: frontend
       listen: 80
+      listen_v6: 81
+      charset: utf-8
+      root_path_s: / 
       return: 301 https://google.com
       ssl: false
       locations:

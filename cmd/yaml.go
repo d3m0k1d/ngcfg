@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -50,6 +51,10 @@ func UnmarshalYAML(file string) (Servers, error) {
 }
 
 func GenNgconf(servers Servers) (string, error) {
+	if len(servers.Servers) == 0 {
+		return "", fmt.Errorf("no servers in yaml file")
+	}
+
 	tmpl, err := template.New("ngconf").Parse(ServerBlockTemplate)
 	if err != nil {
 		return "", err

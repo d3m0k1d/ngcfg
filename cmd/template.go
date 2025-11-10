@@ -5,9 +5,9 @@ server {
     server_name {{.Name}};
     listen {{.Listen}};
     {{if .ListenV6}}listen [::]:{{.ListenV6}};{{end}}
-    charset {{.Charset}};
-    root {{.Root_path_s}};
-    return {{.Return}};
+    {{if .Charset}}charset {{.Charset}};{{end}}
+    {{if .Root_path_s}}root {{.Root_path_s}};{{end}}
+    {{if .Return}}return {{.Return}};{{end}}
     {{if .SSL}}ssl on;{{end}}
 
     {{range .Locations}}

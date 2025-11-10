@@ -39,7 +39,7 @@ var yamlCmd = &cobra.Command{
 			return fmt.Errorf("file not found: %s", file)
 		}
 
-		data, err := UnmarshalYAML(file)
+		data, err := ParseServersFromYaml(file)
 		if err != nil {
 			return err
 		}

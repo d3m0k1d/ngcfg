@@ -15,8 +15,8 @@ type Servers struct {
 
 type Server struct {
 	Name        string `yaml:"name" validate:"required"`
-	Listen      int    `yaml:"listen" validate:"required, min=1, max=65535"`
-	ListenV6    int    `yaml:"listen_v6" validate:" min=1, max=65535"`
+	Listen      int    `yaml:"listen" validate:"required,min=1,max=65535"`
+	ListenV6    int    `yaml:"listen_v6" validate:"min=1,max=65535"`
 	Return      string `yaml:"return"`
 	Root_path_s string `yaml:"root_path_s"`
 	Charset     string `yaml:"charset"`
@@ -31,7 +31,7 @@ type Location struct {
 	Alias_path string `yaml:"alias_path"`
 }
 
-func UnmarshalYAML(file string) (Servers, error) {
+func ParseServersFromYaml(file string) (Servers, error) {
 	var servers Servers
 
 	data, err := os.ReadFile(file)
@@ -40,13 +40,13 @@ func UnmarshalYAML(file string) (Servers, error) {
 	}
 
 	validate := validator.New()
-	if err := validate.Struct(servers); err != nil {
-		return servers, err
-	}
+
 	if err := yaml.Unmarshal(data, &servers); err != nil {
 		return servers, err
 	}
-
+	if err := validate.Struct(servers); err != nil {
+		return servers, err
+	}
 	return servers, nil
 }
 

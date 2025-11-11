@@ -20,8 +20,13 @@ type Server struct {
 	Return      string `yaml:"return"`
 	Root_path_s string `yaml:"root_path_s"`
 	Charset     string `yaml:"charset"`
+	Index       string `yaml:"index"`
 
-	SSL       bool       `yaml:"ssl"`
+	SSL       bool     `yaml:"ssl"`
+	SSL_Cert  string   `yaml:"ssl_cert"`
+	SSL_key   string   `yaml:"ssl_key"`
+	SSL_proto []string `yaml:"ssl_protocols"`
+
 	Locations []Location `yaml:"locations"`
 }
 
@@ -30,6 +35,8 @@ type Location struct {
 	Root_path  string `yaml:"root_path"`
 	Alias_path string `yaml:"alias_path"`
 }
+
+var ssl_protocols = []string{"TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"}
 
 func ParseServersFromYaml(file string) (Servers, error) {
 	var servers Servers
@@ -47,6 +54,7 @@ func ParseServersFromYaml(file string) (Servers, error) {
 	if err := validate.Struct(servers); err != nil {
 		return servers, err
 	}
+
 	return servers, nil
 }
 

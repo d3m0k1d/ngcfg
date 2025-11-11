@@ -9,7 +9,9 @@
 | charset     | charset         |             | string |
 | root_path_s | root            |             | string |
 | ssl         | ssl on\|off     |             | bool   |
-
+| ssl_cert    | ssl_certificate |             | string |
+| ssl_key     | ssl_certificate_key |             | string |
+| ssl_proto   | ssl_protocols   |             | string |
 #### Location block
 
 | YAML    | Nginx directive | Required | Type    |

@@ -7,8 +7,15 @@ server {
     {{if .ListenV6}}listen [::]:{{.ListenV6}};{{end}}
     {{if .Charset}}charset {{.Charset}};{{end}}
     {{if .Root_path_s}}root {{.Root_path_s}};{{end}}
+    {{if .Index}}index {{.Index}};{{end}}
     {{if .Return}}return {{.Return}};{{end}}
+    #SSL block
     {{if .SSL}}ssl on;{{end}}
+    {{if .SSL_Cert}}ssl_certificate {{.SSL_Cert}};{{end}}
+    {{if .SSL_key}}ssl_certificate_key {{.SSL_key}};{{end}}
+    {{if .SSL_proto}}ssl_protocols {{.SSL_proto}};{{end}}
+    
+
 
     {{range .Locations}}
     location /{{.Name}} {

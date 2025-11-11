@@ -1,3 +1,5 @@
+name: Release
+
 on:
   push:
     tags:
@@ -7,9 +9,34 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        arch: [amd64, arm64]
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            arch: amd64
+            binary: ngcfg
+          - os: ubuntu-latest
+            goos: linux
+            arch: arm64
+            binary: ngcfg
+          - os: windows-latest
+            goos: windows
+            arch: amd64
+            binary: ngcfg.exe
+          - os: windows-latest
+            goos: windows
+            arch: arm64
+            binary: ngcfg.exe
+          - os: macos-latest
+            goos: darwin
+            arch: amd64
+            binary: ngcfg
+          - os: macos-latest
+            goos: darwin
+            arch: arm64
+            binary: ngcfg
+
     runs-on: ${{ matrix.os }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -21,23 +48,30 @@ jobs:
           cache: true
 
       - name: Build binary
-        run: GOOS=${{ matrix.os == 'windows-latest' && 'windows' || (matrix.os == 'macos-latest' && 'darwin' || 'linux') }} GOARCH=${{ matrix.arch }} go build -o ngcfg main.go
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.arch }}
+        run: go build -o ${{ matrix.binary }} main.go
 
-      - name: Upload binary artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ngcfg-${{ matrix.os }}-${{ matrix.arch }}
-          path: ngcfg
+          name: ngcfg-${{ matrix.goos }}-${{ matrix.arch }}
+          path: ${{ matrix.binary }}
+          retention-days: 1
 
   release:
     needs: build
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Download artifacts
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          name: ngcfg-ubuntu-latest-amd64
-          path: ./artifacts/
+          path: ./artifacts
 
       - name: Create GitHub Release
         id: create_release
@@ -50,14 +84,66 @@ jobs:
           draft: false
           prerelease: false
           body: |
-            Автоматический релиз для тега ${{ github.ref_name }}
+            # Release ${{ github.ref_name }}
+            
+            Автоматический релиз ngcfg для всех платформ и архитектур.
 
-      - name: Upload binaries to Release
+      - name: Upload Linux amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/ngcfg-ubuntu-latest-amd64/ngcfg
+          asset_path: ./artifacts/ngcfg-linux-amd64/ngcfg
           asset_name: ngcfg-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/ngcfg-linux-arm64/ngcfg
+          asset_name: ngcfg-linux-arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/ngcfg-windows-amd64/ngcfg.exe
+          asset_name: ngcfg-windows-amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/ngcfg-windows-arm64/ngcfg.exe
+          asset_name: ngcfg-windows-arm64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/ngcfg-darwin-amd64/ngcfg
+          asset_name: ngcfg-macos-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/ngcfg-darwin-arm64/ngcfg
+          asset_name: ngcfg-macos-arm64
           asset_content_type: application/octet-stream

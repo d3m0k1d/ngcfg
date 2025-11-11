@@ -36,8 +36,6 @@ type Location struct {
 	Alias_path string `yaml:"alias_path"`
 }
 
-var ssl_protocols = []string{"TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"}
-
 func ParseServersFromYaml(file string) (Servers, error) {
 	var servers Servers
 
@@ -54,7 +52,15 @@ func ParseServersFromYaml(file string) (Servers, error) {
 	if err := validate.Struct(servers); err != nil {
 		return servers, err
 	}
-
+	for _, server := range servers.Servers {
+		if len(server.SSL_proto) != 0 {
+			for _, protocol := range server.SSL_proto {
+				if protocol != "TLSv1" && protocol != "TLSv1.1" && protocol != "TLSv1.2" && protocol != "TLSv1.3" {
+					return servers, fmt.Errorf("invalid ssl protocol %s", protocol)
+				}
+			}
+		}
+	}
 	return servers, nil
 }
 

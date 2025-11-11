@@ -22,7 +22,9 @@ type Server struct {
 	Charset     string `yaml:"charset"`
 	Index       string `yaml:"index"`
 
-	SSL       bool     `yaml:"ssl"`
+	SSL             bool   `yaml:"ssl"`
+	SSL_buffer_size string `yaml:"ssl_buffer_size"`
+
 	SSL_Cert  string   `yaml:"ssl_cert"`
 	SSL_key   string   `yaml:"ssl_key"`
 	SSL_proto []string `yaml:"ssl_protocols"`
@@ -69,7 +71,7 @@ func GenNgconf(servers Servers) (string, error) {
 		return "", fmt.Errorf("no servers in yaml file")
 	}
 
-	tmpl, err := template.New("ngconf").Parse(ServerBlockTemplate)
+	tmpl, err := template.New("server_block").Parse(ServerBlockTemplate)
 	if err != nil {
 		return "", err
 	}

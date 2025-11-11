@@ -1,5 +1,13 @@
 package cmd
 
+const HtppBlockTemplate = `
+http{
+
+    {template "server_block" .}
+    }
+
+`
+
 const ServerBlockTemplate = `
 server {
     server_name {{.Name}};

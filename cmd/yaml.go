@@ -86,5 +86,8 @@ func GenNgconf(servers Servers) (string, error) {
 		buf.WriteString("\n\n")
 	}
 
+	fmt.Println("Written to nginx.conf")
+	os.Create("nginx.conf")
+	os.WriteFile("nginx.conf", []byte(buf.String()), 0644)
 	return buf.String(), nil
 }

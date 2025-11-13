@@ -12,6 +12,7 @@
 | ssl_cert    | ssl_certificate |             | string |
 | ssl_key     | ssl_certificate_key |             | string |
 | ssl_proto   | ssl_protocols   |             | string |
+| ssl_buffer_size  | ssl_buffer_size |             | string    |
 #### Location block
 
 | YAML    | Nginx directive | Required | Type    |

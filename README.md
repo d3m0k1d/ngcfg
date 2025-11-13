@@ -16,12 +16,13 @@ A config generator for [Nginx](https://nginx.org/) writen in golang and using [G
 
 ### Roadmap
   - [x] Generate simple server block from yaml config files to nginx format
+  - [ ] Add validation for yaml configs
   - [ ] Add support json config files
   - [ ] Configurating Nginx with CLI flags and args
   - [ ] SSL sertificate generation support with certbot
 
 ## Requirements
- - Go 1.24.6
+ - Go 1.25.3
 
 ## Installation
 
@@ -31,5 +32,12 @@ cd ngcfg
 go mod tidy
 go build -o ngcfg
 ```
+
+## Usage
+
+```bash
+ngcfg yaml -f {{name.yml}}
+```
+
 ## License
 This project is licensed under the MIT License. 

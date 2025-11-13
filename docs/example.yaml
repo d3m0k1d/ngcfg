@@ -1,9 +1,13 @@
-servers:
+http:
+  client_max_body_size: 100m
+  keepalive_timeout: 65
+  send_timeout: 30
+  servers:
     - name: frontend
       listen: 80
       listen_v6: 81
       charset: utf-8
-      root_path_s: / 
+      root_path_s: /
       return: 301 https://google.com
       ssl: false
       locations:
@@ -11,3 +15,17 @@ servers:
           root_path: /static
         - name: api
           alias_path: /api
+
+    - name: backend
+      listen: 8000
+      charset: utf-8
+      root_path_s: /app
+      ssl: true
+      ssl_cert: /etc/ssl/certs/backend.crt
+      ssl_key: /etc/ssl/private/backend.key
+      ssl_protocols:
+        - TLSv1.2
+        - TLSv1.3
+      locations:
+        - name: api
+          root_path: /api

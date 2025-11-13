@@ -9,8 +9,16 @@ import (
 	"text/template"
 )
 
-type Servers struct {
+type HttpConfig struct {
+	Http Http `yaml:"http"`
+}
+
+type Http struct {
 	Servers []Server `yaml:"servers"`
+
+	ClientMaxBodySize string `yaml:"client_max_body_size"`
+	KeepaliveTimeout  int    `yaml:"keepalive_timeout"`
+	SendTimeout       int    `yaml:"send_timeout"`
 }
 
 type Server struct {
@@ -38,52 +46,56 @@ type Location struct {
 	Alias_path string `yaml:"alias_path"`
 }
 
-func ParseServersFromYaml(file string) (Servers, error) {
-	var servers Servers
+func ParseServersFromYaml(file string) (HttpConfig, error) {
+	var config HttpConfig
 
 	data, err := os.ReadFile(file)
 	if err != nil {
-		return servers, err
+		return config, err
 	}
 
 	validate := validator.New()
 
-	if err := yaml.Unmarshal(data, &servers); err != nil {
-		return servers, err
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		return config, err
 	}
-	if err := validate.Struct(servers); err != nil {
-		return servers, err
+
+	if err := validate.Struct(config); err != nil {
+		return config, err
 	}
-	for _, server := range servers.Servers {
+
+	for _, server := range config.Http.Servers {
 		if len(server.SSL_proto) != 0 {
 			for _, protocol := range server.SSL_proto {
 				if protocol != "TLSv1" && protocol != "TLSv1.1" && protocol != "TLSv1.2" && protocol != "TLSv1.3" {
-					return servers, fmt.Errorf("invalid ssl protocol %s", protocol)
+					return config, fmt.Errorf("invalid ssl protocol %s", protocol)
 				}
 			}
 		}
 	}
-	return servers, nil
+
+	return config, nil
 }
 
-func GenNgconf(servers Servers) (string, error) {
-	if len(servers.Servers) == 0 {
-		return "", fmt.Errorf("no servers in yaml file")
+func GenNgconf(config HttpConfig) (string, error) {
+	if len(config.Http.Servers) == 0 {
+		return "", fmt.Errorf("no servers in http config")
 	}
 
-	tmpl, err := template.New("server_block").Parse(ServerBlockTemplate)
+	funcMap := template.FuncMap{
+		"join": strings.Join,
+	}
+
+	tmpl, err := template.New("nginx").Funcs(funcMap).Parse(FullTemplate)
 	if err != nil {
 		return "", err
 	}
 
 	var buf strings.Builder
 
-	for _, server := range servers.Servers {
-		err = tmpl.Execute(&buf, server)
-		if err != nil {
-			return "", err
-		}
-		buf.WriteString("\n\n")
+	err = tmpl.Execute(&buf, config.Http)
+	if err != nil {
+		return "", err
 	}
 
 	fmt.Println("Written to nginx.conf")
@@ -91,3 +103,4 @@ func GenNgconf(servers Servers) (string, error) {
 	os.WriteFile("nginx.conf", []byte(buf.String()), 0644)
 	return buf.String(), nil
 }
+

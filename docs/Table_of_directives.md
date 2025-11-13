@@ -1,3 +1,12 @@
+# Table of directives
+
+### Http block
+
+| YAML    | Nginx directive  | Required | Type    |
+| ----------- | --------------- | ----------- | ------ |
+| client_max_body_size        | client_max_body_size     |            | string |
+| keepalive_timeout   | keepalive_timeout        |            | string |
+| send_timeout        | send_timeout             |            | string |
 
 #### Server block
 

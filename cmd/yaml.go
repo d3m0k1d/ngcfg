@@ -63,13 +63,25 @@ func ParseServersFromYaml(file string) (HttpConfig, error) {
 	if err := validate.Struct(config); err != nil {
 		return config, err
 	}
+	// Validate http block
+	if ValidateSizeStr(config.Http.ClientMaxBodySize) != true {
+		return config, fmt.Errorf("invalid client_max_body_size %s", config.Http.ClientMaxBodySize)
+
+	}
 
 	for _, server := range config.Http.Servers {
+		// Validate ssl protocol
 		if len(server.SSL_proto) != 0 {
 			for _, protocol := range server.SSL_proto {
 				if protocol != "TLSv1" && protocol != "TLSv1.1" && protocol != "TLSv1.2" && protocol != "TLSv1.3" {
 					return config, fmt.Errorf("invalid ssl protocol %s", protocol)
 				}
+			}
+		}
+		// Validate ssl_buffer_size
+		if server.SSL_buffer_size != "" {
+			if ValidateSizeStr(server.SSL_buffer_size) != true {
+				return config, fmt.Errorf("invalid ssl_buffer_size %s", server.SSL_buffer_size)
 			}
 		}
 	}
@@ -103,4 +115,3 @@ func GenNgconf(config HttpConfig) (string, error) {
 	os.WriteFile("nginx.conf", []byte(buf.String()), 0644)
 	return buf.String(), nil
 }
-

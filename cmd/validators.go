@@ -5,9 +5,19 @@ import (
 )
 
 func ValidateSizeStr(s string) bool {
-	re := regexp.MustCompile(`^\d+[mkg]?$`)
+	if s != "" {
+		re := regexp.MustCompile(`^\d+[mkg]?$`)
+		if !re.MatchString(s) {
+			return false
+		}
+	}
+	return true
+}
+
+func ReturnValidate(s string) bool {
+	re := regexp.MustCompile(`^[1-5]{1,1}[0-9]{1,1}[0-9]{1,1} https?://[a-z./]+$`)
 	if !re.MatchString(s) {
-		panic("invalid size please check the documentation")
+		return false
 	}
 	return true
 }

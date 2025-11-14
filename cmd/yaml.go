@@ -65,8 +65,7 @@ func ParseServersFromYaml(file string) (HttpConfig, error) {
 	}
 	// Validate http block
 	if ValidateSizeStr(config.Http.ClientMaxBodySize) != true {
-		return config, fmt.Errorf("invalid client_max_body_size %s", config.Http.ClientMaxBodySize)
-
+		panic(fmt.Sprintf("invalid client_max_body_size %s", config.Http.ClientMaxBodySize))
 	}
 
 	for _, server := range config.Http.Servers {
@@ -74,14 +73,14 @@ func ParseServersFromYaml(file string) (HttpConfig, error) {
 		if len(server.SSL_proto) != 0 {
 			for _, protocol := range server.SSL_proto {
 				if protocol != "TLSv1" && protocol != "TLSv1.1" && protocol != "TLSv1.2" && protocol != "TLSv1.3" {
-					return config, fmt.Errorf("invalid ssl protocol %s", protocol)
+					panic(fmt.Sprintf("invalid ssl protocol %s", protocol))
 				}
 			}
 		}
 		// Validate ssl_buffer_size
 		if server.SSL_buffer_size != "" {
 			if ValidateSizeStr(server.SSL_buffer_size) != true {
-				return config, fmt.Errorf("invalid ssl_buffer_size %s", server.SSL_buffer_size)
+				panic(fmt.Sprintf("invalid ssl_buffer_size %s", server.SSL_buffer_size))
 			}
 		}
 	}

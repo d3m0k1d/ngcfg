@@ -31,5 +31,5 @@
 | alias_path  | alias           |             | string |
 | proxy_pass  | proxy_pass      |             | string |
 | proxy_buffer_size  | proxy_buffer_size |             | string |
-| proxy_set_header  | proxy_set_header |             | string |
+| proxy_set_header  | proxy_set_header |             | []string |
 

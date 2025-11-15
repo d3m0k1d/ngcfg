@@ -29,7 +29,8 @@ http {
             {{if and .Alias_path .Root_path}}alias {{.Alias_path}};{{end}}
             {{if .Proxy_pass}}proxy_pass {{.Proxy_pass}};{{end}}
             {{if .Proxy_buffer_size}}proxy_buffer_size {{.Proxy_buffer_size}};{{end}}
-            {{if .Proxy_set_header}}proxy_set_header {{.Proxy_set_header}};{{end}}
+            {{range .Proxy_set_header}}proxy_set_header {{.}};{{end}}
+
         }
         {{end}}
     }

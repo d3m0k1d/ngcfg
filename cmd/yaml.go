@@ -42,12 +42,12 @@ type Server struct {
 }
 
 type Location struct {
-	Name              string `yaml:"name"`
-	Root_path         string `yaml:"root_path"`
-	Alias_path        string `yaml:"alias_path"`
-	Proxy_pass        string `yaml:"proxy_pass"`
-	Proxy_buffer_size string `yaml:"proxy_buffer_size"`
-	Proxy_set_header  string `yaml:"proxy_set_header"`
+	Name              string   `yaml:"name"`
+	Root_path         string   `yaml:"root_path"`
+	Alias_path        string   `yaml:"alias_path"`
+	Proxy_pass        string   `yaml:"proxy_pass"`
+	Proxy_buffer_size string   `yaml:"proxy_buffer_size"`
+	Proxy_set_header  []string `yaml:"proxy_set_header"`
 }
 
 func ParseServersFromYaml(file string) (HttpConfig, error) {

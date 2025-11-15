@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/d3m0k1d/ngcfg/internal"
 	"github.com/spf13/cobra"
 	"os"
 	"path"
@@ -39,12 +40,12 @@ var yamlCmd = &cobra.Command{
 			return fmt.Errorf("file not found: %s", file)
 		}
 
-		data, err := ParseServersFromYaml(file)
+		data, err := internal.ParseServersFromYaml(file)
 		if err != nil {
 			return err
 		}
 
-		cfg, err := GenNgconf(data)
+		cfg, err := internal.GenNgconf(data)
 		if err != nil {
 			return err
 		}

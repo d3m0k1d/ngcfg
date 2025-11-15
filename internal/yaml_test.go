@@ -1,4 +1,4 @@
-package cmd
+package internal
 
 import (
 	"strings"
@@ -58,4 +58,3 @@ func TestGenNgconf(t *testing.T) {
 		}
 	}
 }
-

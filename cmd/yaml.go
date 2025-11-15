@@ -19,6 +19,7 @@ type Http struct {
 	ClientMaxBodySize string `yaml:"client_max_body_size"`
 	KeepaliveTimeout  int    `yaml:"keepalive_timeout"`
 	SendTimeout       int    `yaml:"send_timeout"`
+	Gzip              bool   `yaml:"gzip"`
 }
 
 type Server struct {
@@ -41,9 +42,12 @@ type Server struct {
 }
 
 type Location struct {
-	Name       string `yaml:"name"`
-	Root_path  string `yaml:"root_path"`
-	Alias_path string `yaml:"alias_path"`
+	Name              string `yaml:"name"`
+	Root_path         string `yaml:"root_path"`
+	Alias_path        string `yaml:"alias_path"`
+	Proxy_pass        string `yaml:"proxy_pass"`
+	Proxy_buffer_size string `yaml:"proxy_buffer_size"`
+	Proxy_set_header  string `yaml:"proxy_set_header"`
 }
 
 func ParseServersFromYaml(file string) (HttpConfig, error) {
@@ -69,6 +73,12 @@ func ParseServersFromYaml(file string) (HttpConfig, error) {
 	}
 
 	for _, server := range config.Http.Servers {
+		// Validate return
+		if server.Return != "" {
+			if ValidateReturn(server.Return) != true {
+				panic(fmt.Sprintf("invalid return %s", server.Return))
+			}
+		}
 		// Validate ssl protocol
 		if len(server.SSL_proto) != 0 {
 			for _, protocol := range server.SSL_proto {
@@ -82,6 +92,15 @@ func ParseServersFromYaml(file string) (HttpConfig, error) {
 			if ValidateSizeStr(server.SSL_buffer_size) != true {
 				panic(fmt.Sprintf("invalid ssl_buffer_size %s", server.SSL_buffer_size))
 			}
+		}
+		for _, loc := range server.Locations {
+			// Validate proxy_buffer_size
+			if loc.Proxy_buffer_size != "" {
+				if ValidateSizeStr(loc.Proxy_buffer_size) != true {
+					panic(fmt.Sprintf("invalid proxy_buffer_size %s", loc.Proxy_buffer_size))
+				}
+			}
+
 		}
 	}
 

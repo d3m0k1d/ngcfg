@@ -7,7 +7,7 @@
 | client_max_body_size        | client_max_body_size     |            | string |
 | keepalive_timeout   | keepalive_timeout        |            | int |
 | send_timeout        | send_timeout             |            | int |
-
+| gzip        | gzip on\|off             |            | bool |
 #### Server block
 
 | YAML    | Nginx directive  | Required | Type    |
@@ -29,3 +29,7 @@
 | name        | location {name} | ✓           | string |
 | root_path   | root            |             | string |
 | alias_path  | alias           |             | string |
+| proxy_pass  | proxy_pass      |             | string |
+| proxy_buffer_size  | proxy_buffer_size |             | string |
+| proxy_set_header  | proxy_set_header |             | string |
+

@@ -5,6 +5,7 @@ http {
     {{if .ClientMaxBodySize}}client_max_body_size {{.ClientMaxBodySize}};{{end}}
     {{if .KeepaliveTimeout}}keepalive_timeout {{.KeepaliveTimeout}};{{end}}
     {{if .SendTimeout}}send_timeout {{.SendTimeout}};{{end}}
+    {{if .Gzip}}gzip on;{{end}}
 
     {{range .Servers}}
     server {
@@ -26,6 +27,9 @@ http {
             {{if and .Alias_path (not .Root_path)}}alias {{.Alias_path}};{{end}}
             {{if and .Root_path (not .Alias_path)}}root {{.Root_path}};{{end}}
             {{if and .Alias_path .Root_path}}alias {{.Alias_path}};{{end}}
+            {{if .Proxy_pass}}proxy_pass {{.Proxy_pass}};{{end}}
+            {{if .Proxy_buffer_size}}proxy_buffer_size {{.Proxy_buffer_size}};{{end}}
+            {{if .Proxy_set_header}}proxy_set_header {{.Proxy_set_header}};{{end}}
         }
         {{end}}
     }

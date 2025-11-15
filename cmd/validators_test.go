@@ -30,7 +30,7 @@ func TestValidateSizeStr(t *testing.T) {
 		})
 	}
 }
-func TestReturnValidate(t *testing.T) {
+func TestValidateReturn(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -43,9 +43,29 @@ func TestReturnValidate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ReturnValidate(tt.input)
+			got := ValidateReturn(tt.input)
 			if got != tt.expected {
 				t.Errorf("ReturnValidate(%q) = %v, want %v",
+					tt.input, got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestValidateURL(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{name: "valid url", input: "https://example.com", expected: true},
+		{name: "invalid url", input: "htt://example.com/", expected: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := ValidateURL(tt.input)
+			if got != tt.expected {
+				t.Errorf("URLValidate(%q) = %v, want %v",
 					tt.input, got, tt.expected)
 			}
 		})

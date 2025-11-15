@@ -14,12 +14,29 @@ type HttpConfig struct {
 }
 
 type Http struct {
+	Events  Events   `yaml:"events"`
 	Servers []Server `yaml:"servers"`
 
 	ClientMaxBodySize string `yaml:"client_max_body_size"`
 	KeepaliveTimeout  int    `yaml:"keepalive_timeout"`
 	SendTimeout       int    `yaml:"send_timeout"`
 	Gzip              bool   `yaml:"gzip"`
+
+	Sendfile         bool   `yaml:"sendfile"`
+	Worker_processes string `yaml:"worker_processes"`
+	Tcp_nopush       bool   `yaml:"tcp_nopush"`
+
+	Access_log string `yaml:"access_log"`
+	Error_log  string `yaml:"error_log"`
+
+	Add_header    []string `yaml:"add_header"`
+	Server_tokens bool     `yaml:"server_tokens"`
+}
+
+type Events struct {
+	Worker_connections int    `yaml:"worker_connections"`
+	Multi_accept       bool   `yaml:"multi_accept"`
+	Use                string `yaml:"use"`
 }
 
 type Server struct {

@@ -2,8 +2,10 @@ package internal
 
 import (
 	"fmt"
+	"path/filepath"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 // Validate blocks
@@ -38,6 +40,9 @@ func ValidateHttp(config HttpConfig) error {
 		}
 	}
 
+	if config.Http.Access_log != "" {
+
+	}
 	return nil
 }
 
@@ -55,6 +60,19 @@ func ValidateLocation(loc Location, serverIdx, locIdx int, serverName string) er
 	if loc.Proxy_buffer_size != "" {
 		if err := ValidateSizeStr(loc.Proxy_buffer_size); err != nil {
 			return fmt.Errorf("server[%d] '%s': location[%d] '%s': invalid proxy_buffer_size: %w",
+				serverIdx, serverName, locIdx, loc.Name, err)
+		}
+	}
+
+	if loc.Alias_path != "" {
+		if err := ValidateFilePath(loc.Alias_path); err != nil {
+			return fmt.Errorf("server[%d] '%s': location[%d] '%s': invalid alias_path: %w",
+				serverIdx, serverName, locIdx, loc.Name, err)
+		}
+	}
+	if loc.Root_path != "" {
+		if err := ValidateFilePath(loc.Root_path); err != nil {
+			return fmt.Errorf("server[%d] '%s': location[%d] '%s': invalid root_path: %w",
 				serverIdx, serverName, locIdx, loc.Name, err)
 		}
 	}
@@ -111,3 +129,20 @@ func ValidateURL(s string) error {
 	return nil
 }
 
+func ValidateFilePath(path string) error {
+	cleaned := filepath.Clean(path)
+
+	if strings.Contains(cleaned, "..") {
+		return fmt.Errorf("path traversal detected")
+	}
+
+	if !filepath.IsAbs(cleaned) {
+		return fmt.Errorf("path must be absolute")
+	}
+
+	if len(cleaned) > 4096 {
+		return fmt.Errorf("path too long")
+	}
+
+	return nil
+}

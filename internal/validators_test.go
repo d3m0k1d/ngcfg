@@ -191,3 +191,23 @@ func TestValidateSSLProtocols(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateFilePath(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		wantErr bool
+	}{
+		{name: "Valid file path", input: "/etc/nginx", wantErr: false},
+		{name: "Invalid file path", input: "invalid/path", wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateFilePath(tt.input)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ValidateFilePath() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

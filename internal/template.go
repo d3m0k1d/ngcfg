@@ -29,6 +29,11 @@ http {
     {{if .Add_header}}add_header {{range .Add_header}}{{.}};{{end}}{{end}}
     {{if .Server_tokens}}server_tokens {{.Server_tokens}};{{end}}
 
+    {{if .Limit_req}}limit_req {{.Limit_req}};{{end}}
+    {{if .Limit_req_zone}}limit_req_zone {{.Limit_req_zone}};{{end}}
+    {{if .Limit_conn_zone}}limit_conn_zone {{.Limit_conn_zone}};{{end}}
+    {{if .Limit_conn}}limit_conn {{.Limit_conn}};{{end}}
+
     {{range .Servers}}
     server {
         server_name {{.Name}};

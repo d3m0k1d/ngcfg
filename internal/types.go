@@ -20,8 +20,12 @@ type Http struct {
 	Access_log string `yaml:"access_log"`
 	Error_log  string `yaml:"error_log"`
 
-	Add_header    []string `yaml:"add_header"`
-	Server_tokens bool     `yaml:"server_tokens"`
+	Add_header      []string `yaml:"add_header"`
+	Server_tokens   bool     `yaml:"server_tokens"`
+	Limit_req       string   `yaml:"limit_req"`
+	Limit_req_zone  string   `yaml:"limit_req_zone"`
+	Limit_conn_zone string   `yaml:"limit_conn_zone"`
+	Limit_conn      string   `yaml:"limit_conn"`
 }
 
 type Events struct {

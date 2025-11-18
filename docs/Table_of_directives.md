@@ -15,6 +15,11 @@
 | error_log        | error_log             |            | string |
 | add_header        | add_header             |            | []string |
 | server_tokens        | server_tokens             |            | string |
+| limit_req        | limit_req             |            | string |
+| limit_req_zone        | limit_req_zone             |            | string |
+| limit_conn        | limit_conn             |            | string |
+| limit_conn_zone        | limit_conn_zone             |            | string |
+
 
 ### Events block
 
